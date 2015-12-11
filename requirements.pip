@@ -1,0 +1,13 @@
+PyGithub==1.26.0
+decorator==4.0.6
+ipython==4.0.1
+ipython-genutils==0.1.0
+path.py==8.1.2
+pexpect==4.0.1
+pickleshare==0.5
+ptyprocess==0.5
+python-crontab==1.9.3
+python-dateutil==2.4.2
+simplegeneric==0.8.1
+six==1.10.0
+traitlets==4.0.0
