@@ -1,9 +1,22 @@
 #!/usr/bin/env python
 
+"""butterfree
+
+Usage:
+    butterfree.py configure 
+    butterfree.py issue tact
+
+Options:
+    -h --help    Show this screen.
+    --version    Show version.
+
+"""
+
 import sys
 import configparser
 import datetime
 
+from docopt import docopt
 import github
 
 
@@ -51,6 +64,8 @@ def get_test_status(issues):
 
 
 if __name__ == '__main__':
+    arguments = docopt(__doc__, version="butterfree 1")
+
     try:
         config = configparser.ConfigParser()
         config.read('butterfree.ini')
@@ -64,5 +79,10 @@ if __name__ == '__main__':
     U = G.get_user()
     R = [r for r in U.get_repos() if r.name == 'rorschach'][0]
 
-    issues = get_all_issues(R)
-    print(get_test_status(issues))
+
+    if arguments['issue']:
+        issues = get_all_issues(R)
+        if arguments['tact']:
+            print(get_test_status(issues))
+    else:
+        print(__doc__)
