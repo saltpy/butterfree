@@ -66,23 +66,38 @@ def get_test_status(issues):
 if __name__ == '__main__':
     arguments = docopt(__doc__, version="butterfree 1")
 
-    try:
-        config = configparser.ConfigParser()
-        config.read('butterfree.ini')
-    except:
-        print("Please create butterfree.ini in the working directory of butterfree")
-        sys.exit(1)
-
-    G = github.Github(
-        config['credentials']['user'],
-        config['credentials']['password'])
-    U = G.get_user()
-    R = [r for r in U.get_repos() if r.name == 'rorschach'][0]
-
-
-    if arguments['issue']:
-        issues = get_all_issues(R)
-        if arguments['tact']:
-            print(get_test_status(issues))
+    if arguments['configure']:
+        new_config = configparser.ConfigParser()
+        user = input("GitHub User:\n")
+        password = input("GitHub Password:\n")
+        new_config['credentials'] = {}
+        new_config['test-states'] = {}
+        new_config['credentials']['user'] = user
+        new_config['credentials']['password'] = password
+        new_config['credentials']['autocomment_identifier'] = "comment by butterfree"
+        new_config['test-states']['not_written'] = "TEST_STATE=>not_written"
+        new_config['test-states']['not_run'] = "TEST_STATE=>not_run"
+        new_config['test-states']['not_resolved'] = "TEST_STATE=>not_resolved"
+        with open('butterfree.ini', 'w') as configfile:
+            new_config.write(configfile)
     else:
-        print(__doc__)
+        try:
+            config = configparser.ConfigParser()
+            config.read('butterfree.ini')
+        except:
+            print("Please create butterfree.ini in the working directory of butterfree")
+            sys.exit(1)
+
+        G = github.Github(
+            config['credentials']['user'],
+            config['credentials']['password']
+        )
+        U = G.get_user()
+        R = [r for r in U.get_repos() if r.name == 'rorschach'][0]
+        
+        if arguments['issue']:
+            issues = get_all_issues(R)
+            if arguments['tact']:
+                print(get_test_status(issues))
+        else:
+            print(__doc__)
